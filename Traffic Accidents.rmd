@@ -63,6 +63,9 @@ These are the columns in the dataset:
 ```{r}
 colnames(calgary_ta)
 ```
+
+## Data Cleaning
+
 Converting the START_DT column from string to datetime data type:
 ```{r}
 calgary_ta$START_DT = ymd_hms(calgary_ta$START_DT) # convert START_DT to datetime data type
@@ -74,15 +77,13 @@ calgary_ta = calgary_ta %>%
   mutate(Month = month(START_DT), Year = year(START_DT))
 ```
 
+Aggregating the number of traffic incidents by Year, Month, and Quadrant (NE, NW, SE, SW). A note here is these months span from 2016 to 2013
 ```{r}
-head(calgary_ta, 5)
+accidents_month = aggregate(Count~Year + Month + QUADRANT, data=calgary_ta, FUN=sum)
 ```
+Computing the statistics for each Quadrant
 ```{r}
-accidents_month = aggregate(Count~Year + Month, data=calgary_ta, FUN=sum)
-```
-
-```{r}
-favstats(~Count|Month, data=accidents_month)
+favstats(~Count|QUADRANT, data=accidents_month)
 ```
 
 ```{r}
