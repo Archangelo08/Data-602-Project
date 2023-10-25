@@ -1,0 +1,170 @@
+---
+title: "Data 602 Project"
+author: "Ouano, Archangelo"
+date: "2023-10-24"
+output: pdf_document
+---
+
+```{r, include=FALSE}
+library(binom)
+library(car)
+library(collapsibleTree)
+library(dbplyr)
+library(dplyr)
+library(EnvStats)
+library(ggformula)
+library(ggplot2)
+library(gmodels)
+library(htmltools)
+library(ISLR)
+library(knitr)
+library(lawstat)
+library(markdown)
+library(mosaic)
+library(mdsr)
+library(mosaicData)
+library(nycflights13)
+library(olsrr)
+library(plyr)
+library(purrr)
+library(plotly)
+library(resampledata)
+library(rmarkdown)
+library(rpart)
+library(rpart.plot)
+library(rvest)
+library(SDaA)
+library(shiny)
+library(stringi)
+library(tibble)
+library(tidyr)
+library(tidyselect)
+library(tinytex)
+library(yaml)
+library(shiny)
+library(lubridate)
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Loading the Traffic Accident Data
+```{r}
+calgary_ta = read.csv("Traffic_Incidents.csv")
+```
+
+A view of the data
+```{r}
+head(calgary_ta, 5)
+```
+These are the columns in the dataset:
+```{r}
+colnames(calgary_ta)
+```
+Converting the START_DT column from string to datetime data type:
+```{r}
+calgary_ta$START_DT = ymd_hms(calgary_ta$START_DT) # convert START_DT to datetime data type
+```
+
+Creating a Month and Year columns:
+```{r}
+calgary_ta = calgary_ta %>%
+  mutate(Month = month(START_DT), Year = year(START_DT))
+```
+
+```{r}
+head(calgary_ta, 5)
+```
+```{r}
+accidents_month = aggregate(Count~Year + Month, data=calgary_ta, FUN=sum)
+```
+
+```{r}
+favstats(~Count|Month, data=accidents_month)
+```
+
+```{r}
+ggplot(accidents_month, aes(x=Month, y=Count)) +
+  geom_point(col="blue") +
+  xlab("Month") +
+  ylab("Number of Road Incedents") +
+  geom_smooth(method="lm", col="red")
+```
+
+Checking the Correlation Coefficient between Month and Number of Accidents:
+```{r}
+cor(Count~Month, data=accidents_month)
+```
+```{r}
+calgary_ta
+
+```
+
+
+
+```{r}
+
+# Create a bar plot to show the number of accidents by Quadrant
+calgary_ta %>%
+  group_by(QUADRANT) %>%
+  summarise(TotalAccidents = sum(Count)) %>%
+  ggplot(aes(x = QUADRANT, y = TotalAccidents, fill = QUADRANT)) +
+  geom_bar(stat = "identity") +
+  xlab("Quadrant") +
+  ylab("Total Number of Accidents") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_brewer(palette = "Set1")
+
+
+
+
+
+```
+
+
+```{r}
+#Compare if there's a difference between the average number of accidents in Quadrant areas:
+# Use ANOVA to compare accident counts by Quadrant
+anova_result <- aov(Count ~ QUADRANT, data = calgary_ta)
+summary(anova_result)
+
+```
+```{r}
+
+#Predict the number of accidents with months as the independent variable
+# Linear regression model to predict accidents based on months
+model <- lm(Count ~ Month, data = accidents_month)
+summary(model)
+
+# Predict future accident counts for given months
+new_data <- data.frame(Month = 13:24)  # Assuming 13 to 24 for future months
+predicted_counts <- predict(model, newdata = new_data)
+
+
+```
+
+
+
+
+```{r}
+
+
+
+
+```
+
+```{r}
+
+
+
+
+```
+
+
+```{r}
+
+
+
+```
