@@ -98,15 +98,11 @@ Checking the Correlation Coefficient between Month and Number of Accidents:
 ```{r}
 cor(Count~Month, data=accidents_month)
 ```
-```{r}
-calgary_ta
 
-```
 
 
 
 ```{r}
-
 # Create a bar plot to show the number of accidents by Quadrant
 calgary_ta %>%
   group_by(QUADRANT) %>%
@@ -117,11 +113,6 @@ calgary_ta %>%
   ylab("Total Number of Accidents") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_fill_brewer(palette = "Set1")
-
-
-
-
-
 ```
 
 
@@ -130,10 +121,9 @@ calgary_ta %>%
 # Use ANOVA to compare accident counts by Quadrant
 anova_result <- aov(Count ~ QUADRANT, data = calgary_ta)
 summary(anova_result)
-
 ```
-```{r}
 
+```{r}
 #Predict the number of accidents with months as the independent variable
 # Linear regression model to predict accidents based on months
 model <- lm(Count ~ Month, data = accidents_month)
@@ -142,30 +132,4 @@ summary(model)
 # Predict future accident counts for given months
 new_data <- data.frame(Month = 13:24)  # Assuming 13 to 24 for future months
 predicted_counts <- predict(model, newdata = new_data)
-
-
-```
-
-
-
-
-```{r}
-
-
-
-
-```
-
-```{r}
-
-
-
-
-```
-
-
-```{r}
-
-
-
 ```
