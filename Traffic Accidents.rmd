@@ -77,11 +77,21 @@ calgary_ta = calgary_ta %>%
   mutate(Month = month(START_DT), Year = year(START_DT))
 ```
 
-Aggregating the number of traffic incidents by Year, Month, and Quadrant (NE, NW, SE, SW). A note here is these months span from 2016 to 2013
+Cleaning the null values within the [QUADRANT] column
+```{r}
+# for null values within [QUADRANT] take the quadrant value from [INCIDENT.INFO]
+calgary_ta$QUADRANT = ifelse(calgary_ta$QUADRANT == "", stri_sub(calgary_ta$INCIDENT.INFO,-2), calgary_ta$QUADRANT)
+
+# Capitalize the extracted quadrant values
+calgary_ta$QUADRANT = toupper(calgary_ta$QUADRANT)
+calgary_ta = filter(calgary_ta, calgary_ta$QUADRANT == "NE" | calgary_ta$QUADRANT == "NW" | calgary_ta$QUADRANT == "SE" | calgary_ta$QUADRANT == "SW")
+```
+
+Aggregating the number of Traffic Incidents by Year, Month, Quadrant (data from 2016 to 2013)
 ```{r}
 accidents_month = aggregate(Count~Year + Month + QUADRANT, data=calgary_ta, FUN=sum)
 ```
-Computing the statistics for each Quadrant
+Computing the Statistics for each Quadrant (NE, NW, SE, SW)
 ```{r}
 favstats(~Count|QUADRANT, data=accidents_month)
 ```
@@ -99,7 +109,10 @@ Checking the Correlation Coefficient between Month and Number of Accidents:
 cor(Count~Month, data=accidents_month)
 ```
 
-
+Checking if the number of traffic incidents by Month can be modeled by a Normal Distribution:
+```{r}
+ggplot(accidents_month, aes(sample=Count)) + stat_qq(col="blue") + stat_qqline(col="red")
+```
 
 
 ```{r}
