@@ -52,7 +52,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Loading the Traffic Accident Data
 ```{r}
-calgary_ta = read.csv("Traffic_Incidents.csv")
+calgary_ta = read.csv("https://raw.githubusercontent.com/Archangelo08/Data-602-Project/main/Traffic_Incidents.csv")
 ```
 
 A view of the data
